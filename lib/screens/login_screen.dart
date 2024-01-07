@@ -32,10 +32,12 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 48.0,
             ),
             TextField(
+              keyboardType: TextInputType.emailAddress,
+              textAlign: TextAlign.center ,
               style:TextStyle(
                 color: Colors.black,
               ),
-              keyboardType: TextInputType.emailAddress,
+
               onChanged: (value) {
                 email=value;
                 //Do something with the user input.
@@ -46,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 8.0,
             ),
             TextField(
+              obscuringCharacter:'*',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black,
               ),

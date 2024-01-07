@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "263863136044",
+    "project_id": "flashchat-redo1",
+    "storage_bucket": "flashchat-redo1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263863136044:android:617bc2a9e091f2c11f4689",
+        "android_client_info": {
+          "package_name": "com.example.flashchat_redo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyDP-GBYeRvSkljPsA2JHaNtNA2h5Kfec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
