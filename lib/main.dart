@@ -3,8 +3,17 @@ import 'screens/welcome_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/registration_screen.dart';
 import 'screens/chat_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(FlashChat());
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+   await Firebase.initializeApp(
+     options: FirebaseOptions(apiKey:'AIzaSyAyDP-GBYeRvSkljPsA2JHaNtNA2h5Kfec' , appId:'1:263863136044:android:617bc2a9e091f2c11f4689' , messagingSenderId: '263863136044', projectId: 'flashchat-redo1')
+   );
+    
+
+  runApp(FlashChat());
+}
 
 class FlashChat extends StatelessWidget {
   @override

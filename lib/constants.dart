@@ -27,8 +27,6 @@ const kTextFieldDecoration=InputDecoration(
     color: Colors.grey,
 
   ),
-
-
   contentPadding:
   EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   border: OutlineInputBorder(
