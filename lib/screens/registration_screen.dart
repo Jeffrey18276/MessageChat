@@ -30,80 +30,82 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Hero(
-                tag: 'logo',
-                child: Container(
-                  height: 200.0,
-                  child: Image.asset('images/logo.png'),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Hero(
+                  tag: 'logo',
+                  child: Container(
+                    height: 200.0,
+                    child: Image.asset('images/register.png'),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 48.0,
-              ),
-              TextField(
-                keyboardType: TextInputType.emailAddress,
-                textAlign: TextAlign.center ,
-                style: TextStyle(
-                  color: Colors.black,
+                SizedBox(
+                  height: 48.0,
                 ),
-
-                onChanged: (value) {
-                  email = value;
-                  //Do something with the user input.
-                },
-                decoration:
-                kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              TextField(
-                obscuringCharacter:'*',
-                textAlign: TextAlign.center,
+                TextField(
+                  keyboardType: TextInputType.emailAddress,
+                  textAlign: TextAlign.center ,
                   style: TextStyle(
                     color: Colors.black,
                   ),
-                  obscureText: true,
+          
                   onChanged: (value) {
-                    password = value;
+                    email = value;
                     //Do something with the user input.
                   },
-                  decoration: kTextFieldDecoration.copyWith(
-                      hintText: 'Enter your password')),
-              const SizedBox(
-                height: 24.0,
-              ),
-              RoundedButton(
-                  title: 'Register', colour: Colors.blueAccent,
-
-                  onPressed: ()async {
-                    setState(() {
-                      showSpinner=true;
-                    });
-                    try {
-                      final newUser = await _auth.createUserWithEmailAndPassword(
-                          email: email, password: password);
-                      if(newUser!=null){
-                        Navigator.pushNamed(context,ChatScreen.id);
-                      }
+                  decoration:
+                  kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                TextField(
+                  obscuringCharacter:'*',
+                  textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    obscureText: true,
+                    onChanged: (value) {
+                      password = value;
+                      //Do something with the user input.
+                    },
+                    decoration: kTextFieldDecoration.copyWith(
+                        hintText: 'Enter your password')),
+                const SizedBox(
+                  height: 24.0,
+                ),
+                RoundedButton(
+                    title: 'Register', colour: Colors.blueAccent,
+          
+                    onPressed: ()async {
                       setState(() {
-                        showSpinner=false;
+                        showSpinner=true;
                       });
-                    }
-
-                    catch(e){
-                      print(e);
-                    }
-
-                  },
-              ),
-            ],
+                      try {
+                        final newUser = await _auth.createUserWithEmailAndPassword(
+                            email: email, password: password);
+                        if(newUser!=null){
+                          Navigator.pushNamed(context,ChatScreen.id);
+                        }
+                        setState(() {
+                          showSpinner=false;
+                        });
+                      }
+          
+                      catch(e){
+                        print(e);
+                      }
+          
+                    },
+                ),
+              ],
+            ),
           ),
         ),
       ),

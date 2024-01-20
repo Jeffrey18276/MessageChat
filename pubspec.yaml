@@ -49,7 +49,8 @@ flutter:
 
 
   assets:
-    - images/
+    - images/login.png
+    - images/register.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
