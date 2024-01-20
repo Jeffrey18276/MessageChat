@@ -6,12 +6,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginScreen extends StatefulWidget {
+
   static const String id = 'login_screen';
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey=GlobalKey<FormState>();
   String email = '';
   String password = '';
   final _auth = FirebaseAuth.instance;
@@ -19,12 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: SingleChildScrollView(
           child: Form(
+            key:_formKey,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 80),
               child: Column(
@@ -40,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     tag: 'log',
                     child: Container(
                       child: Image.asset('images/login.png'),
+                      height: 300,
                     ),
                   ),
                   TextFormField(
@@ -60,31 +65,46 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    validator: (value){
+                      return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!)?null:"Please enter a valid email";
+                    },
                   ),
                   SizedBox(
-                    height: 8.0,
+                    height: 5.0,
                   ),
-                  TextField(
-                    obscuringCharacter: '*',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
+                  TextFormField(
                     obscureText: true,
+                    obscuringCharacter: '*',
                     onChanged: (value) {
                       password = value;
                       //Do something with the user input.
                     },
-                    decoration: kTextFieldDecoration.copyWith(
-                        hintText: 'Enter your password'),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w500),
+                    decoration: ktextInputDecoration.copyWith(
+                      labelText: 'Password',
+                      prefixIcon: const Align(
+                        widthFactor: 1.0,
+                        heightFactor: 1.0,
+                        child: Icon(
+                          Icons.lock,
+                          color: Color(0xFFee7b64),
+                        ),
+                      ),
+                    ),
+                    validator: (value){
+                      if(value!.length<6){
+                        return "Password must be atlease 6 characters in length";
+                      }
+                    },
+
                   ),
-                  SizedBox(
-                    height: 24.0,
-                  ),
+
                   RoundedButton(
                       title: 'Log In',
                       colour: Colors.lightBlueAccent,
                       onPressed: () async {
+                        login();
                         setState(() {
                           showSpinner = true;
                         });
@@ -109,5 +129,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+
   }
+  login(){
+    _formKey.currentState!.validate();
+  }
+
 }
