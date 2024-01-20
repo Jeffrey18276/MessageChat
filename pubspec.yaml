@@ -49,6 +49,7 @@ flutter:
 
 
   assets:
+    - images/logo.png
     - images/login.png
     - images/register.png
 

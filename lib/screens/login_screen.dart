@@ -1,19 +1,20 @@
 import 'package:flashchat_redo/constants.dart';
 import 'package:flashchat_redo/screens/chat_screen.dart';
+import 'package:flashchat_redo/screens/registration_screen.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flashchat_redo/components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginScreen extends StatefulWidget {
-
   static const String id = 'login_screen';
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey=GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
   final _auth = FirebaseAuth.instance;
@@ -21,14 +22,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: SingleChildScrollView(
           child: Form(
-            key:_formKey,
+            key: _formKey,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 80),
               child: Column(
@@ -43,8 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Hero(
                     tag: 'log',
                     child: Container(
-                      child: Image.asset('images/login.png'),
                       height: 300,
+                      child: Image.asset('images/login.png'),
                     ),
                   ),
                   TextFormField(
@@ -65,8 +65,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    validator: (value){
-                      return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!)?null:"Please enter a valid email";
+                    validator: (value) {
+                      return RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value!)
+                          ? null
+                          : "Please enter a valid email";
                     },
                   ),
                   SizedBox(
@@ -92,17 +96,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    validator: (value){
-                      if(value!.length<6){
+                    validator: (value) {
+                      if (value!.length < 6) {
                         return "Password must be atlease 6 characters in length";
                       }
                     },
-
                   ),
-
                   RoundedButton(
                       title: 'Log In',
-                      colour: Colors.lightBlueAccent,
+                      colour: Color(0xFFee7b64),
                       onPressed: () async {
                         login();
                         setState(() {
@@ -121,7 +123,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         } catch (e) {
                           print(e);
                         }
-                      })
+                      }),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                          text: "Don't have an account? ",
+                          style: const TextStyle(color: Colors.black),
+                          children: [
+                            TextSpan(
+                                text: 'Register here',
+
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(
+                                        context, RegistrationScreen.id);
+                                  }),
+                          ]),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -129,10 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-
   }
-  login(){
+
+  login() {
     _formKey.currentState!.validate();
   }
-
 }
