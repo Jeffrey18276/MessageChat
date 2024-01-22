@@ -49,7 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextFormField(
                     onChanged: (value) {
-                      email = value;
+                      setState(() {
+                        email = value;
+                      });
+
                       //Do something with the user input.
                     },
                     style: TextStyle(
@@ -80,7 +83,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     obscuringCharacter: '*',
                     onChanged: (value) {
-                      password = value;
+                      setState(() {
+                        password = value;
+                      });
+
                       //Do something with the user input.
                     },
                     style: TextStyle(
@@ -106,10 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       title: 'Log In',
                       colour: Color(0xFFee7b64),
                       onPressed: () async {
-                        login();
-                        setState(() {
-                          showSpinner = true;
-                        });
+                        if(login()) {
+                          setState(() {
+                            showSpinner = true;
+                          });
+                        }
                         try {
                           final newUser =
                               await _auth.signInWithEmailAndPassword(
@@ -137,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 text: 'Register here',
 
                                 style: const TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.blue,
                                   decoration: TextDecoration.underline,
                                 ),
                                 recognizer: TapGestureRecognizer()
@@ -158,6 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   login() {
-    _formKey.currentState!.validate();
+    if(_formKey.currentState!.validate())return true;
+    return false;
+
   }
 }
