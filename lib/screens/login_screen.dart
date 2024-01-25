@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       title: 'Log In',
                       colour: Color(0xFFee7b64),
                       onPressed: () async {
-                        if(login()) {
+                         if(login()) {
                           setState(() {
                             showSpinner = true;
                           });
