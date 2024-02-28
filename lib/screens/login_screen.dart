@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const String id = 'login_screen';
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       //Do something with the user input.
                     },
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.black, fontWeight: FontWeight.w500),
                     decoration: ktextInputDecoration.copyWith(
                       labelText: 'Password',
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   RoundedButton(
                       title: 'Log In',
-                      colour: Color(0xFFee7b64),
+                      colour: const Color(0xFFee7b64),
                       onPressed: () async {
                          if(login()) {
                           setState(() {
@@ -149,8 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    Navigator.pushNamed(
-                                        context, RegistrationScreen.id);
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistrationScreen()));
                                   }),
                           ]),
                     ),

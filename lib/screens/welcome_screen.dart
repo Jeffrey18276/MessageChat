@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flashchat_redo/components/rounded_button.dart';
 
-
 class WelcomeScreen extends StatefulWidget {
-  static const String id = 'welcome_screen';
+
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
@@ -23,15 +22,15 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     controller = AnimationController(
         vsync: this, duration: Duration(seconds: 1), upperBound: 1);
 
-    animation =
-        ColorTween(begin: Colors.grey, end: Colors.white).animate(controller);
+    animation = ColorTween(begin: Colors.transparent, end: Colors.white)
+        .animate(controller);
     controller.forward();
     animation.addStatusListener((status) {
-      print(status);
+      // print(status);
     });
     controller.addListener(() {
       setState(() {});
-      print(animation.value);
+      // print(animation.value);
     });
   }
 
@@ -65,9 +64,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     TypewriterAnimatedText(
                       'Flash Chat',
                       textStyle: const TextStyle(
-                        fontSize: 45.0,
-                        fontWeight: FontWeight.w900,
-                      ),
+                          fontSize: 45.0,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.grey),
                       speed: const Duration(milliseconds: 300),
                     ),
                   ],
@@ -82,13 +81,20 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               title: 'Log In',
               colour: Color(0xFFee7b64),
               onPressed: () {
-                Navigator.pushNamed(context, LoginScreen.id);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
               },
             ),
-            RoundedButton(title: 'Register', colour:Colors.blueAccent, onPressed: () {
-              Navigator.pushNamed(context, RegistrationScreen.id);
-            },)
-
+            RoundedButton(
+              title: 'Register',
+              colour: Colors.blueAccent,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RegistrationScreen()));
+              },
+            )
           ],
         ),
       ),

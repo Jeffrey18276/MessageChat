@@ -1,5 +1,7 @@
 import 'package:flashchat_redo/constants.dart';
+import 'package:flashchat_redo/helper/helper_function.dart';
 import 'package:flashchat_redo/screens/chat_screen.dart';
+import 'package:flashchat_redo/screens/home_page.dart';
 import 'package:flashchat_redo/screens/login_screen.dart';
 import 'package:flashchat_redo/service/auth_service.dart';
 import 'package:flutter/gestures.dart';
@@ -50,7 +52,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const Text(
-                  "Login",
+                  "Register",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                 ),
@@ -182,8 +184,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context,LoginScreen.id);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
                                 }),
                         ]),
                   ),
@@ -201,8 +202,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _isLoading=true;
 
       });
-      await authService.registeruserwithemailandpassword(fullname, email, password).then((value) {
+      await authService.registeruserwithemailandpassword(fullname, email, password).then((value)async {
           if(value==true){
+
+            await HelperFunctions.saveUserLoggedInStatus(true);
+            await HelperFunctions.saveUserEmail(email);
+            await HelperFunctions.saveUserName(fullname);
+            
+            // ignore: use_build_context_synchronously
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context)=> HomePage()),
+            );
 
 
           }

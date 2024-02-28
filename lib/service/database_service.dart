@@ -14,7 +14,6 @@ class DatabaseService{
       "groups":[],
       "profilePic":"",
       "uid":uid
-
     });
   }
 }
