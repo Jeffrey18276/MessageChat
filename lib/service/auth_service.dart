@@ -6,6 +6,26 @@ class AuthService{
   final _auth=FirebaseAuth.instance;
 
   //login
+  Future loginWithUserNameandPassword(String email,String password) async {
+    try {
+      print("Userf has been created");
+      User user = (await _auth.signInWithEmailAndPassword(
+          email: email, password: password))
+          .user!;
+      if (user != null) {
+        print("User has been created");
+        //call our database service
+        return true;
+      }
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      return e.message;
+    }
+  }
+
+
+
+
   //register
 Future registeruserwithemailandpassword(String fullname,String email,String password) async{
   try{
@@ -15,7 +35,7 @@ Future registeruserwithemailandpassword(String fullname,String email,String pass
     if(user!=null){
       print("User has been created");
       //call our database service
-      await DatabaseService(uid:user.uid).updateUserData(fullname, email);
+      await DatabaseService(uid:user.uid).savingUserData (fullname, email);
       return true;
     }
 

@@ -1,14 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flashchat_redo/constants.dart';
 import 'package:flashchat_redo/screens/chat_screen.dart';
 import 'package:flashchat_redo/screens/registration_screen.dart';
+import 'package:flashchat_redo/service/auth_service.dart';
+import 'package:flashchat_redo/service/database_service.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flashchat_redo/components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class LoginScreen extends StatefulWidget {
+import '../helper/helper_function.dart';
+import 'home_page.dart';
 
+class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -19,6 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = '';
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
+  bool _isLoading = false;
+  AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       title: 'Log In',
                       colour: const Color(0xFFee7b64),
                       onPressed: () async {
-                         if(login()) {
+                        if (login()) {
                           setState(() {
                             showSpinner = true;
                           });
@@ -142,14 +149,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             TextSpan(
                                 text: 'Register here',
-
                                 style: const TextStyle(
                                   color: Colors.blue,
                                   decoration: TextDecoration.underline,
                                 ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistrationScreen()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RegistrationScreen()));
                                   }),
                           ]),
                     ),
@@ -163,9 +173,36 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  login() {
-    if(_formKey.currentState!.validate())return true;
-    return false;
+  login() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+      await authService
+          .loginWithUserNameandPassword(email, password)
+          .then((value) async {
+        if (value == true) {
+          QuerySnapshot snapshot =
+              await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+                  .gettingUserData(email);
 
+          await HelperFunctions.saveUserLoggedInStatus(true);
+          await HelperFunctions.saveUserEmail(email);
+          await HelperFunctions.saveUserName(snapshot.docs[0]["fullName"]);
+
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        } else {
+          showSnackBar(context, Colors.red, value);
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      });
+    }
+    return false;
   }
 }
