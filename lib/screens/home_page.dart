@@ -54,19 +54,17 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFFee7b64),
         title: const Text(
           'Groups',
-          style: TextStyle(fontSize: 27.0, fontWeight: FontWeight.bold),
+          style: TextStyle(color:Colors.white,fontSize: 27.0, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 0,
       ),
-
-
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.symmetric(vertical: 50.0),
           children: [
             Icon(
-              Icons.account_circle_sharp,
+              Icons.account_circle,
               size: 150,
               color: Colors.grey[70],
             ),
@@ -77,15 +75,12 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
-             Divider(
+            Divider(
               height: 2,
               indent: 20.0,
               endIndent: 20.0,
               color: Colors.blueGrey.shade200,
             ),
-
-
-
             const ListTile(
               selected: true,
               selectedColor: Color(0xFFee7b64),
@@ -96,12 +91,12 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(color: Colors.black38),
               ),
             ),
-
-
-
             ListTile(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const ProfilePage()));
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfilePage(userName: username,email: email)));
               },
               selectedColor: Color(0xFFee7b64),
               leading: Icon(Icons.person_2_rounded),
@@ -111,15 +106,39 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(color: Colors.black38),
               ),
             ),
-
-
             ListTile(
               onTap: () async {
-                await authService.signOut().whenComplete(() => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen())));
+                showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("Logout"),
+                        content: const Text("Are you sure you want to logout"),
+                        actions: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(
+                                Icons.cancel_rounded,
+                                color: Colors.red,
+                              )),
+                          IconButton(
+                            onPressed: () async{
+                              await authService.signOut().whenComplete(() => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => LoginScreen())));
+                            },
+                            icon: Icon(Icons.done_rounded),
+                            color: Colors.green,
+                          )
+                        ],
+                      );
+                    });
+
               },
-              selectedColor: Color(0xFFee7b64),
+              selectedColor: const Color(0xFFee7b64),
               leading: const Icon(Icons.exit_to_app),
               contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               title: Text(
@@ -130,14 +149,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text("LOGOUT"),
-          onPressed: () {
-            authService.signOut();
-          },
-        ),
-      ),
+
     );
   }
 }
