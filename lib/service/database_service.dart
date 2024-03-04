@@ -21,4 +21,10 @@ class DatabaseService{
     QuerySnapshot snapshot=await usercollection.where("email",isEqualTo:email ).get();
     return snapshot;
   }
+
+  //get user groups
+
+  getUserGroups()async{
+    return usercollection.doc(uid).snapshots();
+}
 }

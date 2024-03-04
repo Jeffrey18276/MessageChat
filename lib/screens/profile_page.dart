@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       body:Container(
-        padding:const EdgeInsets.symmetric(horizontal: 40,vertical: 170),
+        padding:const EdgeInsets.symmetric(horizontal: 40,vertical: 150),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -130,17 +130,23 @@ class _ProfilePageState extends State<ProfilePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-               const Text('Full Name',style: TextStyle(fontSize: 17) ),
-                Text(widget.userName,style: TextStyle(fontSize: 17),)
+               const Text('Full Name',style: TextStyle(fontSize: 17,fontWeight: FontWeight.w600) ),
+                Text(widget.userName,style: TextStyle(fontSize: 17,fontWeight: FontWeight.w600),)
               ],
+            ),
+            Divider(
+              height: 20,
+              thickness: 2,
+              color: Colors.grey.shade200,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Email',style: TextStyle(fontSize: 17),),
-                Text(widget.email,style: TextStyle(fontSize: 17),)
+                const Text('Email',style: TextStyle(fontSize: 17,
+                fontWeight: FontWeight.w600),),
+                Text(widget.email,style: TextStyle(fontSize: 17,fontWeight: FontWeight.w600),)
               ],
-            )
+            ),
 
           ],
         ),

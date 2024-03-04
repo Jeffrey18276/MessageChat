@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashchat_redo/helper/helper_function.dart';
 import 'package:flashchat_redo/screens/login_screen.dart';
 import 'package:flashchat_redo/screens/profile_page.dart';
 import 'package:flashchat_redo/screens/search_page.dart';
 import 'package:flashchat_redo/service/auth_service.dart';
+import 'package:flashchat_redo/service/database_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart ';
 
 class HomePage extends StatefulWidget {
@@ -18,6 +21,8 @@ class _HomePageState extends State<HomePage> {
 
   String username = '';
   String email = '';
+
+  Stream? groups;
 
   @override
   void initState() {
@@ -37,6 +42,13 @@ class _HomePageState extends State<HomePage> {
         username = value!;
       });
     });
+    await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+        .getUserGroups()
+        .then((snapshot) {
+      setState(() {
+        groups = snapshot;
+      });
+    });
   }
 
   Widget build(BuildContext context) {
@@ -54,7 +66,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFFee7b64),
         title: const Text(
           'Groups',
-          style: TextStyle(color:Colors.white,fontSize: 27.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.white, fontSize: 27.0, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 0,
@@ -96,10 +109,11 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ProfilePage(userName: username,email: email)));
+                        builder: (context) =>
+                            ProfilePage(userName: username, email: email)));
               },
               selectedColor: Color(0xFFee7b64),
-              leading: Icon(Icons.person_2_rounded),
+              leading: const Icon(Icons.person_2_rounded),
               contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               title: Text(
                 "Profile",
@@ -125,10 +139,13 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.red,
                               )),
                           IconButton(
-                            onPressed: () async{
-                              await authService.signOut().whenComplete(() => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => LoginScreen())));
+                            onPressed: () async {
+                              await authService.signOut().whenComplete(() =>
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LoginScreen())));
                             },
                             icon: Icon(Icons.done_rounded),
                             color: Colors.green,
@@ -136,7 +153,6 @@ class _HomePageState extends State<HomePage> {
                         ],
                       );
                     });
-
               },
               selectedColor: const Color(0xFFee7b64),
               leading: const Icon(Icons.exit_to_app),
@@ -149,7 +165,62 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      body: groupList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          popUpDialog(context);
+        },
+        elevation: 0,
+        backgroundColor: Colors.grey.shade400,
+        child: const Icon(
+          Icons.add,
+          size: 30,
+          color: Color(0xFFee7b64),
+        ),
+      ),
+    );
+  }
 
+  popUpDialog(BuildContext context) {}
+  groupList() {
+    return StreamBuilder(
+        stream: groups,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data['groups'] != null) {
+              if (snapshot.data['groups'].length != 0) {
+                return Text('Hello');
+              } else
+                return noGroupWidget();
+
+            }
+
+            else {
+              return noGroupWidget();
+            }
+
+          } else {
+            return Center(
+                child: CircularProgressIndicator(
+              color: const Color(0xFFee7b64),
+            ));
+          }
+        });
+  }
+
+  noGroupWidget() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 25),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.add_circle,
+            color: Colors.grey,
+            size: 75,
+          ),
+        ],
+      ),
     );
   }
 }
