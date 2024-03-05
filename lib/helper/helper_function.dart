@@ -1,44 +1,41 @@
-import 'package:shared_preferences/shared_preferences.dart';
-class HelperFunctions{
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-  //keys
-  static String userLoggedInKey="LOGGEDINKEY";
-  static String userNameKey="USERNAMEKEY";
-  static String userEmailKey="USEREMAILKEY";
+class HelperFunctions {
+  // keys
+  static String userLoggedInKey = "LOGGEDINKEY";
+  static String userNameKey = "USERNAMEKEY";
+  static String userEmailKey = "USEREMAILKEY";
 
-
-  //saving the data to Shared Prefer...
-
-
-  static Future<bool?> saveUserLoggedInStatus(bool isUserLoggedIn)async{
-      SharedPreferences sf=await SharedPreferences.getInstance();
-      return await sf.setBool(userLoggedInKey, isUserLoggedIn);
+  // saving the data to Flutter Secure Storage
+  static Future<void> saveUserLoggedInStatus(bool isUserLoggedIn) async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: userLoggedInKey, value: isUserLoggedIn.toString());
   }
 
-  static Future<bool?> saveUserName(String userName)async{
-    SharedPreferences sf=await SharedPreferences.getInstance();
-    return await sf.setString(userNameKey, userName);
+  static Future<void> saveUserName(String userName) async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: userNameKey, value: userName);
   }
 
-  static Future<bool?> saveUserEmail(String userEmail)async{
-    SharedPreferences sf=await SharedPreferences.getInstance();
-    return await sf.setString(userEmailKey, userEmail);
-
-
+  static Future<void> saveUserEmail(String userEmail) async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: userEmailKey, value: userEmail);
   }
 
+  // getting the data from Flutter Secure Storage
+  static Future<bool?> getUserLoggedInStatus() async {
+    final storage = FlutterSecureStorage();
+    String? value = await storage.read(key: userLoggedInKey);
+    return value != null ? value.toLowerCase() == 'true' : null;
+  }
 
-  //getting the data from Shared Prefer..
-  static Future<bool?>getUserLoggedInStatus()async{
-    SharedPreferences sf=await SharedPreferences.getInstance();
-    return sf.getBool(userLoggedInKey);
+  static Future<String?> getUserEmailSF() async {
+    final storage = FlutterSecureStorage();
+    return storage.read(key: userEmailKey);
   }
-  static Future<String?>getUserEmailSF()async{
-    SharedPreferences sf=await SharedPreferences.getInstance();
-    return sf.getString(userEmailKey);
-  }
-  static Future<String?>getUserNameSF()async{
-    SharedPreferences sf=await SharedPreferences.getInstance();
-    return sf.getString(userNameKey);
+
+  static Future<String?> getUserNameSF() async {
+    final storage = FlutterSecureStorage();
+    return storage.read(key: userNameKey);
   }
 }
