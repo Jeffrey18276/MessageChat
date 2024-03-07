@@ -8,7 +8,7 @@ class AuthService{
   //login
   Future loginWithUserNameandPassword(String email,String password) async {
     try {
-      print("Userf has been created");
+      print("User has been created");
       User user = (await _auth.signInWithEmailAndPassword(
           email: email, password: password))
           .user!;
