@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flashchat_redo/components/groups_tile.dart';
 import 'package:flashchat_redo/constants.dart';
 import 'package:flashchat_redo/helper/helper_function.dart';
 import 'package:flashchat_redo/screens/login_screen.dart';
@@ -30,6 +31,19 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     gettinguserData();
+  }
+
+
+  //string manipulation get group id
+
+  String getId(String res){
+      return res.substring(0,res.indexOf('_'));
+  }
+
+  //string manipulationg get group name
+
+  String getName(String res){
+    return res.substring(res.indexOf('_')+1);
   }
 
   gettinguserData() async {
@@ -127,6 +141,7 @@ class _HomePageState extends State<HomePage> {
                 "Profile",
                 style: TextStyle(color: Colors.black38),
               ),
+
             ),
             ListTile(
               onTap: () async {
@@ -159,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ));
                               },
-                              icon: Icon(Icons.done_rounded),
+                              icon: const Icon(Icons.done_rounded),
                               color: Colors.green,
                             )
                           ],
@@ -289,7 +304,13 @@ class _HomePageState extends State<HomePage> {
         if (snapshot.hasData) {
           if (snapshot.data['groups'] != null) {
             if (snapshot.data['groups'].length != 0) {
-              return Text('Hello');
+              return ListView.builder(
+                  itemCount: snapshot.data['groups'].length,
+                  itemBuilder: (context,index){
+                    int reverseIndex=snapshot.data['groups'].length-index-1;
+                    return GroupTile(userName: snapshot.data['fullName'], groupId: getId(snapshot.data['groups'][reverseIndex]), groupName:getName(snapshot.data['groups'][reverseIndex]));
+                  }
+              );
             } else
               return noGroupWidget();
           } else {

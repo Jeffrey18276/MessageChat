@@ -44,6 +44,8 @@ Future createGroup(String username,String id,String groupName)async{
       "groupId":groupdocumentReference.id,
     });
 
+    //update groups in user
+
     DocumentReference userDocumentReference=usercollection.doc(uid);
     return await userDocumentReference.update({
       "groups":FieldValue.arrayUnion(["${groupdocumentReference.id}_${groupName}"])
