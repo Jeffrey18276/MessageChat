@@ -1,55 +1,76 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DatabaseService{
+class DatabaseService {
   final String? uid;
   DatabaseService({required this.uid});
 
-  final CollectionReference usercollection=FirebaseFirestore.instance.collection('users');
-  final CollectionReference groupcollection=FirebaseFirestore.instance.collection('groups');
+  final CollectionReference usercollection =
+      FirebaseFirestore.instance.collection('users');
+  final CollectionReference groupcollection =
+      FirebaseFirestore.instance.collection('groups');
 
-  Future savingUserData(String fullName,String email)async{
+  Future savingUserData(String fullName, String email) async {
     return await usercollection.doc(uid).set({
-      "fullName":fullName,
-      "email":email,
-      "groups":[],
-      "profilePic":"",
-      "uid":uid
+      "fullName": fullName,
+      "email": email,
+      "groups": [],
+      "profilePic": "",
+      "uid": uid
     });
   }
 
-  Future gettingUserData(String email)async{
-    QuerySnapshot snapshot=await usercollection.where("email",isEqualTo:email ).get();
+  Future gettingUserData(String email) async {
+    QuerySnapshot snapshot =
+        await usercollection.where("email", isEqualTo: email).get();
     return snapshot;
   }
 
   //get user groups
 
-  getUserGroups()async{
+  getUserGroups() async {
     return usercollection.doc(uid).snapshots();
-}
-Future createGroup(String username,String id,String groupName)async{
-    DocumentReference groupdocumentReference=await groupcollection.add({
-      "groupName":groupName,
-      "groupIcon":"",
-      "admin" : "${id}_$username",
-      "members":"[]",
-      "groupId":"",
-      "recentMessage":"",
-      "recentMessageSender":"",
+  }
 
+  Future createGroup(String username, String id, String groupName) async {
+    DocumentReference groupdocumentReference = await groupcollection.add({
+      "groupName": groupName,
+      "groupIcon": "",
+      "admin": "${id}_$username",
+      "members": "[]",
+      "groupId": "",
+      "recentMessage": "",
+      "recentMessageSender": "",
     });
-  //update the members
+    //update the members
     await groupdocumentReference.update({
-      "members":FieldValue.arrayUnion(["${uid}_$username"]),
-      "groupId":groupdocumentReference.id,
+      "members": FieldValue.arrayUnion(["${uid}_$username"]),
+      "groupId": groupdocumentReference.id,
     });
 
     //update groups in user
 
-    DocumentReference userDocumentReference=usercollection.doc(uid);
+    DocumentReference userDocumentReference = usercollection.doc(uid);
     return await userDocumentReference.update({
-      "groups":FieldValue.arrayUnion(["${groupdocumentReference.id}_${groupName}"])
+      "groups":
+          FieldValue.arrayUnion(["${groupdocumentReference.id}_${groupName}"])
     });
-}
+  }
 
+  gettingChats(String groupId) async {
+    return groupcollection
+        .doc(groupId)
+        .collection('messages')
+        .orderBy("time")
+        .snapshots();
+  }
+
+  Future getGroupAdmin(String groupId)async{
+    DocumentReference documentReference=groupcollection.doc(groupId);
+    DocumentSnapshot ds= await documentReference.get();
+    return ds['admin'];
+
+  }
+  getGroupMembers(String groupId)async{
+    return groupcollection.doc(groupId).snapshots();
+  }
 }

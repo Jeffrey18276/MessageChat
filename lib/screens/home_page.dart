@@ -69,6 +69,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme:IconThemeData(color: Colors.white) ,
         actions: [
           IconButton(
             onPressed: () {
@@ -77,7 +78,8 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => SearchPage()),
               );
             },
-            icon: const Icon(Icons.search),
+            icon:  Icon(Icons.search,
+            color: Colors.blue.shade200,),
           )
         ],
         backgroundColor: Color(0xFFee7b64),
@@ -93,6 +95,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
       ),
       drawer: Drawer(
+
         child: ListView(
           padding: EdgeInsets.symmetric(vertical: 50.0),
           children: [
@@ -262,7 +265,6 @@ class _HomePageState extends State<HomePage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  print("create button pressed");
                   if (groupName != "") {
                     setState(() {
                       _isloading = true;
@@ -282,12 +284,12 @@ class _HomePageState extends State<HomePage> {
                     });
                   }
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFee7b64),
+                ),
                 child: const Text(
                   'Create',
                   style: const TextStyle(color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFee7b64),
                 ),
               )
             ],
@@ -305,6 +307,7 @@ class _HomePageState extends State<HomePage> {
           if (snapshot.data['groups'] != null) {
             if (snapshot.data['groups'].length != 0) {
               return ListView.builder(
+                shrinkWrap: true,
                   itemCount: snapshot.data['groups'].length,
                   itemBuilder: (context,index){
                     int reverseIndex=snapshot.data['groups'].length-index-1;
@@ -317,9 +320,9 @@ class _HomePageState extends State<HomePage> {
             return noGroupWidget();
           }
         } else {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(
-              color: const Color(0xFFee7b64),
+              color: Color(0xFFee7b64),
             ),
           );
         }
@@ -329,7 +332,7 @@ class _HomePageState extends State<HomePage> {
 
   noGroupWidget() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 25),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
