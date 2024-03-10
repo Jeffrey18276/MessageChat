@@ -59,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
           widget.groupName,
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xFFee7b64),
+        backgroundColor:const  Color(0xFFee7b64),
         actions: [
           IconButton(
               onPressed: () {
