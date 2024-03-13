@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        Navigator.push(
+                                        Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
@@ -180,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
           await HelperFunctions.saveUserName(snapshot.docs[0]["fullName"]);
 
           // ignore: use_build_context_synchronously
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
           );

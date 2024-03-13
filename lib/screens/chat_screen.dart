@@ -1,19 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flashchat_redo/screens/group_info.dart';
 import 'package:flashchat_redo/service/database_service.dart';
-import 'package:flutter/material.dart';
+import 'message_tile.dart';
 
 class ChatScreen extends StatefulWidget {
   String groupId = '';
   String groupName = '';
   String userName = '';
-  ChatScreen(
-      {super.key,
-      required this.groupId,
-      required this.groupName,
-      required this.userName});
+
+  ChatScreen({
+    Key? key,
+    required this.groupId,
+    required this.groupName,
+    required this.userName,
+  }) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -22,12 +25,12 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   String admin = '';
   Stream<QuerySnapshot>? chats;
+  TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
-    // TODO: implement initState
-    getChatandAdmin();
     super.initState();
+    getChatandAdmin();
   }
 
   getChatandAdmin() {
@@ -48,8 +51,6 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,23 +60,122 @@ class _ChatScreenState extends State<ChatScreen> {
           widget.groupName,
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor:const  Color(0xFFee7b64),
+        backgroundColor: const Color(0xFFee7b64),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => GroupInfo(
-                            groupId: widget.groupId,
-                            groupName: widget.groupName,
-                            adminName: admin)));
-              },
-              icon: Icon(Icons.info,
-              color: Colors.blueGrey.shade600,))
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GroupInfo(
+                    groupId: widget.groupId,
+                    groupName: widget.groupName,
+                    adminName: admin,
+                  ),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.info,
+              color: Colors.blueGrey.shade600,
+            ),
+          )
         ],
       ),
-      body: Center(child: Text(widget.groupName)),
+      body: Column(
+
+        children: [
+          Expanded(child: chatMessages()),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: TextFormField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        hintText: "Type a message",
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                GestureDetector(
+                  onTap: sendMessages,
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.send,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  Widget chatMessages() {
+    return StreamBuilder(
+      stream: chats,
+      builder: (context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                reverse: true,
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  int reverseIndex = snapshot.data!.docs.length - index - 1;
+                  return MessageTile(
+                    message: snapshot.data!.docs[reverseIndex]['message'],
+                    sender: snapshot.data!.docs[reverseIndex]['sender'],
+                    sentByMe: widget.userName ==
+                        snapshot.data!.docs[reverseIndex]['sender'],
+                  );
+                },
+              )
+            : Container();
+      },
+    );
+  }
+
+  void sendMessages() {
+    // Implement message sending logic here
+    if (_controller.text.isNotEmpty) {
+      Map<String, dynamic> chatMessageMap = {
+        'message': _controller.text,
+        'sender': widget.userName,
+        'time': FieldValue.serverTimestamp(), // Use server timestamp
+      };
+      DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+          .sendMessage(widget.groupId, chatMessageMap);
+      setState(() {
+        _controller.clear();
+      });
+    }
   }
 }

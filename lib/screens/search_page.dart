@@ -143,8 +143,7 @@ class _SearchPageState extends State<SearchPage> {
                   searchSnapshot!.docs[index]['groupName'],
                   searchSnapshot!.docs[index]['admin']);
             })
-        : Container(
-    );
+        : Container();
   }
 
   joinedOrNot(
@@ -180,23 +179,29 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
       subtitle: Text('Admin: ${getAdmin(admin)}'),
-
       trailing: InkWell(
-        onTap: ()async{
-          await DatabaseService(uid:user!.uid).toggleGroupJoin(groupName, groupId, username);
-          if(_isJoined){
+        onTap: () async {
+          await DatabaseService(uid: user!.uid)
+              .toggleGroupJoin(groupName, groupId, username);
+          if (_isJoined) {
             setState(() {
-              _isJoined=!_isJoined;
+              _isJoined = !_isJoined;
             });
-            showSnackBar(context, Colors.green, "Successfully joined  $groupName");
-            await Future.delayed(Duration(milliseconds: 500),(){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen(groupId: groupId,groupName: groupName,userName: username,)));
+            showSnackBar(
+                context, Colors.green, "Successfully joined  $groupName");
+            await Future.delayed(Duration(milliseconds: 500), () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatScreen(
+                            groupId: groupId,
+                            groupName: groupName,
+                            userName: username,
+                          )));
             });
-          }
-          else{
+          } else {
             setState(() {
-              _isJoined=!_isJoined;
-
+              _isJoined = !_isJoined;
             });
             showSnackBar(context, Colors.red, "Left  $groupName");
           }

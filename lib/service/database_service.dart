@@ -40,6 +40,7 @@ class DatabaseService {
       "groupId": "",
       "recentMessage": "",
       "recentMessageSender": "",
+      "recentMessageTime":""
     });
     //update the members
     await groupdocumentReference.update({
@@ -114,5 +115,15 @@ class DatabaseService {
       });
 
     }
+  }
+  sendMessage(String groupId,Map<String,dynamic>ChatMessageMap)async{
+    groupcollection.doc(groupId).collection("messages").add(ChatMessageMap);
+    groupcollection.doc(groupId).update({
+        "recentMessage":ChatMessageMap['message'],
+      "recentMessageSender":ChatMessageMap['sender'],
+      "recentMessageTime":ChatMessageMap['time'].toString()
+
+    });
+
   }
 }

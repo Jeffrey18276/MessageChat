@@ -184,7 +184,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
                                 }),
                         ]),
                   ),

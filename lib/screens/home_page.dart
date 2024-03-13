@@ -160,7 +160,10 @@ class _HomePageState extends State<HomePage> {
                           actions: [
                             IconButton(
                               onPressed: () {
-                                Navigator.pop(context);
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>  LoginScreen()),
+                                        (route) => false);
                               },
                               icon: const Icon(
                                 Icons.cancel_rounded,
