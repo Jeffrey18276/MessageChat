@@ -4,8 +4,9 @@ class MessageTile extends StatefulWidget {
   final String message;
   final bool sentByMe;
   final String sender;
+  final String senderid;
 
-  MessageTile({Key? key, required this.message, required this.sentByMe, required this.sender})
+  MessageTile({Key? key, required this.message, required this.sentByMe, required this.sender,required this.senderid})
       : super(key: key);
 
   @override

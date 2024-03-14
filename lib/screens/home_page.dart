@@ -160,10 +160,7 @@ class _HomePageState extends State<HomePage> {
                           actions: [
                             IconButton(
                               onPressed: () {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) =>  LoginScreen()),
-                                        (route) => false);
+                               Navigator.pop(context);
                               },
                               icon: const Icon(
                                 Icons.cancel_rounded,
@@ -173,11 +170,12 @@ class _HomePageState extends State<HomePage> {
                             IconButton(
                               onPressed: () async {
                                 await authService.signOut().whenComplete(() =>
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => LoginScreen(),
                                       ),
+                                        (route)=>false,
                                     ));
                               },
                               icon: const Icon(Icons.done_rounded),
@@ -314,7 +312,7 @@ class _HomePageState extends State<HomePage> {
                   itemCount: snapshot.data['groups'].length,
                   itemBuilder: (context,index){
                     int reverseIndex=snapshot.data['groups'].length-index-1;
-                    return GroupTile(userName: snapshot.data['fullName'], groupId: getId(snapshot.data['groups'][reverseIndex]), groupName:getName(snapshot.data['groups'][reverseIndex]));
+                    return GroupTile(userName: snapshot.data['fullName'], groupId: getId(snapshot.data['groups'][reverseIndex]), groupName:getName(snapshot.data['groups'][reverseIndex]),userid:getId(snapshot.data['groups'][reverseIndex]) ,);
                   }
               );
             } else

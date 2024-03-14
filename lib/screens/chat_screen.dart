@@ -10,12 +10,14 @@ class ChatScreen extends StatefulWidget {
   String groupId = '';
   String groupName = '';
   String userName = '';
+  String senderid='';
 
   ChatScreen({
     Key? key,
     required this.groupId,
     required this.groupName,
     required this.userName,
+    required this.senderid,
   }) : super(key: key);
 
   @override
@@ -153,8 +155,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   return MessageTile(
                     message: snapshot.data!.docs[reverseIndex]['message'],
                     sender: snapshot.data!.docs[reverseIndex]['sender'],
-                    sentByMe: widget.userName ==
-                        snapshot.data!.docs[reverseIndex]['sender'],
+                    sentByMe: widget.senderid ==
+                        snapshot.data!.docs[reverseIndex]['senderid'],
+                    senderid: FirebaseAuth.instance.currentUser!.uid,
                   );
                 },
               )
@@ -169,6 +172,7 @@ class _ChatScreenState extends State<ChatScreen> {
       Map<String, dynamic> chatMessageMap = {
         'message': _controller.text,
         'sender': widget.userName,
+        'senderid':FirebaseAuth.instance.currentUser!.uid,
         'time': FieldValue.serverTimestamp(), // Use server timestamp
       };
       DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)

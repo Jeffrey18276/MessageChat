@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashchat_redo/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -6,11 +7,13 @@ class GroupTile extends StatefulWidget {
   String userName = '';
   String groupId = '';
   String groupName = '';
+  String userid='';
   GroupTile(
       {super.key,
       required this.userName,
       required this.groupId,
-      required this.groupName});
+      required this.groupName,
+      required this.userid});
 
   @override
   State<GroupTile> createState() => _GroupTileState();
@@ -22,7 +25,7 @@ class _GroupTileState extends State<GroupTile> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ChatScreen(groupId: widget.groupId,groupName: widget.groupName,userName: widget.userName,)));
+            context, MaterialPageRoute(builder: (context) => ChatScreen(groupId: widget.groupId,groupName: widget.groupName,userName: widget.userName,senderid: FirebaseAuth.instance.currentUser!.uid,)));
       },
       child: Container(
         child: Padding(

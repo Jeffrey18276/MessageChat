@@ -40,7 +40,8 @@ class DatabaseService {
       "groupId": "",
       "recentMessage": "",
       "recentMessageSender": "",
-      "recentMessageTime":""
+      "recentMessageTime":"",
+      "recentMessageID":""
     });
     //update the members
     await groupdocumentReference.update({
@@ -121,9 +122,21 @@ class DatabaseService {
     groupcollection.doc(groupId).update({
         "recentMessage":ChatMessageMap['message'],
       "recentMessageSender":ChatMessageMap['sender'],
+      "recentMessageId":ChatMessageMap['senderid'],
       "recentMessageTime":ChatMessageMap['time'].toString()
 
     });
 
+  }
+
+  deleteGroup(String groupId) async{
+    try {
+      await FirebaseFirestore.instance.collection('groups')
+          .doc(groupId)
+          .delete();
+    }
+    catch (e){
+      print("Error deleting the group: $e");
+    }
   }
 }
