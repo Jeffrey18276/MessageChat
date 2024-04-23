@@ -29,7 +29,7 @@ class _GroupInfoState extends State<GroupInfo> {
     getMembers();
     super.initState();
   }
-
+  
   String getAdminName(String r) {
     return r.substring(r.indexOf('_') + 1);
   }
@@ -168,37 +168,33 @@ class _GroupInfoState extends State<GroupInfo> {
       stream: members,
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data['members'] != null) {
-            if (snapshot.data['members'] != 0) {
-              return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data['members'].length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 5.0),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Color(0xFFee7b64),
-                          child: Text(
-                            getAdminName(snapshot.data['members'][index])
-                                .substring(0, 1)
-                                .toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+         
+          List<dynamic>? membersList = snapshot.data['members'];
+
+          if (membersList != null && membersList.isNotEmpty) {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: membersList.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5.0),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundColor:const Color(0xFFee7b64),
+                      child: Text(
+                        membersList[index].substring(0, 1).toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
                         ),
-                        title:
-                            Text(getAdminName(snapshot.data['members'][index])),
                       ),
-                    );
-                  });
-            } else {
-              return const Center(child: Text("No members in the group"));
-            }
+                    ),
+                    title: Text(getAdminName(membersList[index])),
+                  ),
+                );
+              },
+            );
           } else {
             return const Center(child: Text("No members in the group"));
           }
@@ -212,4 +208,5 @@ class _GroupInfoState extends State<GroupInfo> {
       },
     );
   }
+
 }

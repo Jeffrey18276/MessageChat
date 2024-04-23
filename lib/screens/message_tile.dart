@@ -28,7 +28,7 @@ class _MessageTileState extends State<MessageTile> {
         margin: widget.sentByMe
             ? const EdgeInsets.only(left: 200)
             : const EdgeInsets.only(right: 200),
-        alignment: widget.sentByMe ? Alignment.bottomLeft : Alignment.bottomRight,
+        alignment: widget.sentByMe ? Alignment.bottomRight : Alignment.bottomLeft,
         padding: EdgeInsets.only(
           bottom: 17,
           top: 17,

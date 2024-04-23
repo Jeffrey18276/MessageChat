@@ -47,7 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         "Login",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 40, fontWeight: FontWeight.bold),
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
                       ),
                       Hero(
                         tag: 'log',
@@ -126,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 showSpinner = true;
                               });
                             }
-
                           }),
                       const SizedBox(
                         height: 10,
@@ -180,11 +181,11 @@ class _LoginScreenState extends State<LoginScreen> {
           await HelperFunctions.saveUserName(snapshot.docs[0]["fullName"]);
 
           // ignore: use_build_context_synchronously
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false,
           );
-
         } else {
           showSnackBar(context, Colors.red, value);
           setState(() {

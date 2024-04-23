@@ -1,3 +1,4 @@
+
 import 'login_screen.dart';
 import 'registration_screen.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: animation.value,
+
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(

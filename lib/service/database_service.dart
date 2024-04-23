@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../components/encrypt_data.dart';
+
 class DatabaseService {
   final String? uid;
   DatabaseService({required this.uid});
@@ -117,17 +119,28 @@ class DatabaseService {
 
     }
   }
-  sendMessage(String groupId,Map<String,dynamic>ChatMessageMap)async{
-    groupcollection.doc(groupId).collection("messages").add(ChatMessageMap);
+  sendMessage(String groupId, Map<String, dynamic> chatMessageMap) async {
+    // Extract the message text from the chatMessageMap
+    String message = chatMessageMap['message'];
+
+    // Encrypt the message
+    String encryptedMessage = EncryptionService.encryptWithAESKey(message);
+
+    // Update the chat message map with the encrypted message
+    chatMessageMap['encryptedMessage'] = encryptedMessage;
+
+    // Add the chat message to Firestore
+    await groupcollection.doc(groupId).collection("messages").add(chatMessageMap);
+
+    // Update the recent message in the group collection
     groupcollection.doc(groupId).update({
-        "recentMessage":ChatMessageMap['message'],
-      "recentMessageSender":ChatMessageMap['sender'],
-      "recentMessageId":ChatMessageMap['senderid'],
-      "recentMessageTime":ChatMessageMap['time'].toString()
-
+      "recentMessage": message, // Store the original, unencrypted message
+      "recentMessageSender": chatMessageMap['sender'],
+      "recentMessageId": chatMessageMap['senderid'],
+      "recentMessageTime": chatMessageMap['time'].toString(),
     });
-
   }
+
 
   deleteGroup(String groupId) async{
     try {

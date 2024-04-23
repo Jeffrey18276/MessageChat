@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashchat_redo/screens/chat_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -45,7 +46,8 @@ class _GroupTileState extends State<GroupTile> {
             ),
             title: Text(
               widget.groupName,
-              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              style:  TextStyle(color: Colors.black, fontWeight: FontWeight.bold,
+              ),
             ),
             subtitle: const Text("Join the conversation"),
           ),
