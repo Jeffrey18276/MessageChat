@@ -1,9 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flashchat_redo/screens/home_page.dart';
 import 'package:flashchat_redo/service/database_service.dart';
 import 'package:flutter/material.dart';
-
-import 'login_screen.dart';
 
 class GroupInfo extends StatefulWidget {
   String groupId = '';
@@ -11,9 +8,9 @@ class GroupInfo extends StatefulWidget {
   String adminName = '';
   GroupInfo(
       {super.key,
-      required this.groupId,
-      required this.groupName,
-      required this.adminName});
+        required this.groupId,
+        required this.groupName,
+        required this.adminName});
 
   @override
   State<GroupInfo> createState() => _GroupInfoState();
@@ -29,7 +26,7 @@ class _GroupInfoState extends State<GroupInfo> {
     getMembers();
     super.initState();
   }
-  
+
   String getAdminName(String r) {
     return r.substring(r.indexOf('_') + 1);
   }
@@ -59,53 +56,7 @@ class _GroupInfoState extends State<GroupInfo> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) {
-                    return StatefulBuilder(
-                      builder: (context, setState) {
-                        return AlertDialog(
-                          title: const Text("Exit"),
-                          content: const Text(
-                              "Are you sure you want to exit the group"),
-                          actions: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(
-                                Icons.cancel_rounded,
-                                color: Colors.red,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () async {
-                                DatabaseService(
-                                        uid: FirebaseAuth
-                                            .instance.currentUser!.uid)
-                                    .toggleGroupJoin(
-                                        widget.groupName,
-                                        widget.groupId,
-                                        getAdminName(widget.adminName))
-                                    .whenComplete(() =>
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    HomePage())));
-                              },
-                              icon: const Icon(Icons.done_rounded),
-                              color: Colors.green,
-                            )
-                          ],
-                        );
-                      },
-                    );
-                  },
-                );
-              },
+              onPressed: () {},
               icon: Icon(
                 Icons.exit_to_app,
                 color: Colors.grey.shade200,
@@ -159,54 +110,64 @@ class _GroupInfoState extends State<GroupInfo> {
               ),
               memberList(),
             ],
-          )),
-    );
-  }
+          )
+      ),
 
-  memberList() {
+
+    );
+
+  }
+  memberList(){
     return StreamBuilder(
       stream: members,
-      builder: (context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-         
-          List<dynamic>? membersList = snapshot.data['members'];
+      builder: (context,AsyncSnapshot snapshot){
+        if(snapshot.hasData){
+          if(snapshot.data['members']!=null){
+            if(snapshot.data['members']!=0){
+              return ListView.builder(
+                  shrinkWrap: true,
 
-          if (membersList != null && membersList.isNotEmpty) {
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: membersList.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5.0),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      backgroundColor:const Color(0xFFee7b64),
-                      child: Text(
-                        membersList[index].substring(0, 1).toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                  itemCount: snapshot.data['members'].length,
+                  itemBuilder: (context,index){
+                    return Container(
+                      padding:const  EdgeInsets.symmetric(vertical: 20,horizontal: 5.0),
+                      child:ListTile(
+                        leading: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Color(0xFFee7b64),
+                          child:  Text(
+                            getAdminName(snapshot.data['members'][index]).substring(0,1).toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+
+                            ),),
+
+
                         ),
+                        title: Text(getAdminName(snapshot.data['members'][index])),
+
                       ),
-                    ),
-                    title: Text(getAdminName(membersList[index])),
-                  ),
-                );
-              },
-            );
-          } else {
-            return const Center(child: Text("No members in the group"));
+                    );
+
+
+                  });
+            }
+            else{
+              return const Center(child:Text("No members in the group"));
+            }
+
+          }else{
+            return const Center(child:Text("No members in the group"));
           }
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: Color(0xFFee7b64),
-            ),
-          );
+
         }
+        else{
+          return const Center(child: CircularProgressIndicator(color: Color(0xFFee7b64),),);
+
+        }
+
       },
     );
   }
-
 }

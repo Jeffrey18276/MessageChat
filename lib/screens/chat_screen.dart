@@ -113,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Stack(
                   children: [
                     if (!_showEmoji) Positioned.fill(child: chatMessages()),
-                
+
                     if (_showEmoji)
                       Positioned(
                         bottom: 0,
@@ -128,20 +128,20 @@ class _ChatScreenState extends State<ChatScreen> {
                               backgroundColor: Colors.white,
                               emojiSizeMax: 28 *
                                   (Platform.isAndroid ? 1.0 : 1.20),
-                
+
                             ),
                             swapCategoryAndBottomBar: false,
                             categoryViewConfig: CategoryViewConfig(
-                              iconColorSelected: Colors.red.shade200,
-                              backspaceColor: Colors.grey
+                                iconColorSelected: Colors.red.shade200,
+                                backspaceColor: Colors.grey
                             ),
                             bottomActionBarConfig: BottomActionBarConfig(
-                
-                
+
+
                             ),
-                
+
                             searchViewConfig: const SearchViewConfig(
-                
+
                             ),
                           ),
                         ),

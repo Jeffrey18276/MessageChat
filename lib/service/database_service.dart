@@ -105,7 +105,7 @@ class DatabaseService {
         'groups':FieldValue.arrayRemove(["${groupId}_${groupName}"])
       });
       await groupDocumentReference.update({
-        'members':FieldValue.arrayRemove(["${groupId}_${groupName}"])
+        'members':FieldValue.arrayRemove(["${groupId}_${userName}"])
       });
 
     }
@@ -114,7 +114,7 @@ class DatabaseService {
         'groups':FieldValue.arrayUnion(["${groupId}_${groupName}"])
       });
       await groupDocumentReference.update({
-        'members':FieldValue.arrayUnion(["${groupId}_${groupName}"])
+        'members':FieldValue.arrayUnion(["${groupId}_${userName}"])
       });
 
     }
@@ -128,6 +128,8 @@ class DatabaseService {
 
     // Update the chat message map with the encrypted message
     chatMessageMap['encryptedMessage'] = encryptedMessage;
+    chatMessageMap.remove(message);
+
 
     // Add the chat message to Firestore
     await groupcollection.doc(groupId).collection("messages").add(chatMessageMap);
