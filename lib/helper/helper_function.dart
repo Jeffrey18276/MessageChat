@@ -2,39 +2,64 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HelperFunctions {
   // keys
-  static String userLoggedInKey = "LOGGEDINKEY";
-  static String userNameKey = "USERNAMEKEY";
-  static String userEmailKey = "USEREMAILKEY";
-  // saving the data to Flutter Secure Storage
+  static const String userLoggedInKey = "LOGGEDINKEY";
+  static const String userNameKey = "USERNAMEKEY";
+  static const String userEmailKey = "USEREMAILKEY";
+
+  // Create a single instance of FlutterSecureStorage
+  static final FlutterSecureStorage _storage = FlutterSecureStorage();
+
+  // Saving the data to Flutter Secure Storage
   static Future<void> saveUserLoggedInStatus(bool isUserLoggedIn) async {
-    final storage = FlutterSecureStorage();
-    await storage.write(key: userLoggedInKey, value: isUserLoggedIn.toString());
+    try {
+      await _storage.write(key: userLoggedInKey, value: isUserLoggedIn.toString());
+    } catch (e) {
+      print("Error saving user logged in status: $e");
+    }
   }
 
   static Future<void> saveUserName(String userName) async {
-    final storage = FlutterSecureStorage();
-    await storage.write(key: userNameKey, value: userName);
+    try {
+      await _storage.write(key: userNameKey, value: userName);
+    } catch (e) {
+      print("Error saving username: $e");
+    }
   }
 
   static Future<void> saveUserEmail(String userEmail) async {
-    final storage = FlutterSecureStorage();
-    await storage.write(key: userEmailKey, value: userEmail);
+    try {
+      await _storage.write(key: userEmailKey, value: userEmail);
+    } catch (e) {
+      print("Error saving user email: $e");
+    }
   }
 
-  // getting the data from Flutter Secure Storage
-  static Future<bool?> getUserLoggedInStatus() async {
-    final storage = FlutterSecureStorage();
-    String? value = await storage.read(key: userLoggedInKey);
-    return value != null ? value.toLowerCase() == 'true' : null;
+  // Getting the data from Flutter Secure Storage
+  static Future<bool> getUserLoggedInStatus() async {
+    try {
+      String? value = await _storage.read(key: userLoggedInKey);
+      return value != null ? value.toLowerCase() == 'true' : false;
+    } catch (e) {
+      print("Error fetching user logged in status: $e");
+      return false;
+    }
   }
 
   static Future<String?> getUserEmailSF() async {
-    final storage = FlutterSecureStorage();
-    return storage.read(key: userEmailKey);
+    try {
+      return await _storage.read(key: userEmailKey);
+    } catch (e) {
+      print("Error fetching user email: $e");
+      return null;
+    }
   }
 
   static Future<String?> getUserNameSF() async {
-    final storage = FlutterSecureStorage();
-    return storage.read(key: userNameKey);
+    try {
+      return await _storage.read(key: userNameKey);
+    } catch (e) {
+      print("Error fetching username: $e");
+      return null;
+    }
   }
 }

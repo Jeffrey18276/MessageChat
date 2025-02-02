@@ -46,6 +46,7 @@ class _GroupInfoState extends State<GroupInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xFFee7b64),
         centerTitle: true,

@@ -8,18 +8,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flashchat_redo/components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
-
+import 'package:validators/validators.dart'; // Added validators package
 
 class RegistrationScreen extends StatefulWidget {
+  static const String routeName = '/registration';
   static const String id = 'registration_screen';
-  final _auth=FirebaseAuth.instance;
-
-  String email='';
-  String password='';
 
   RegistrationScreen({super.key});
 
@@ -28,21 +23,28 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  bool _isLoading=false;
-  final _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
+
   String email = '';
   String password = '';
-  String fullname='';
-  AuthService authService=AuthService();
+  String fullname = '';
 
+  AuthService authService = AuthService();
 
-  final _formKey=GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: _isLoading? Center(child:CircularProgressIndicator(color:Theme.of(context).primaryColor,
-      strokeWidth: 5,)):SingleChildScrollView(
+      body: _isLoading
+          ? Center(
+        child: CircularProgressIndicator(
+          color: Theme.of(context).primaryColor,
+          strokeWidth: 5,
+        ),
+      )
+          : SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Padding(
@@ -54,12 +56,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const Text(
                   "Register",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+
+                  style: TextStyle(
+                      color:Colors.black,
+                      fontSize: 40, fontWeight: FontWeight.bold),
                 ),
                 const Text(
-                    "Create your account now to chat and explore",
+                  "Create your account now to chat and explore",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color:Colors.black,
+                      fontWeight: FontWeight.bold),
                 ),
                 Hero(
                   tag: 'log',
@@ -69,126 +76,82 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                 ),
                 TextFormField(
-                  onChanged: (value) {
-                    setState(() {
-                      fullname=value;
-                    });
-
-                    //Do something with the user input.
-                  },
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w500),
+                  onChanged: (value) => setState(() => fullname = value),
+                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                   decoration: ktextInputDecoration.copyWith(
                     labelText: 'Full Name',
-                    prefixIcon: const Align(
-                      widthFactor: 1.0,
-                      heightFactor: 1.0,
-                      child: Icon(
-                        Icons.person,
-                        color: Color(0xFFee7b64),
-                      ),
-                    ),
+                    prefixIcon: const Icon(Icons.person, color: Color(0xFFee7b64)),
                   ),
-                  validator: (value) {
-                    if(value!.isNotEmpty){
-                      return null;
-                    }
-                    else return 'Name cannot be empty';
-                  }
+                  validator: (value) => value!.isNotEmpty ? null : 'Name cannot be empty',
                 ),
-               const SizedBox(height: 5.0,),
-
+                const SizedBox(height: 5.0),
                 TextFormField(
-                  onChanged: (value) {
-                    setState(() {
-                      email = value;
-                    });
-
-                    //Do something with the user input.
-                  },
-                  style:const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w500),
+                  keyboardType: TextInputType.emailAddress, // Added keyboard type
+                  onChanged: (value) => setState(() => email = value),
+                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                   decoration: ktextInputDecoration.copyWith(
                     labelText: 'Email',
-                    prefixIcon: const Align(
-                      widthFactor: 1.0,
-                      heightFactor: 1.0,
-                      child: Icon(
-                        Icons.email,
-                        color: Color(0xFFee7b64),
-                      ),
-                    ),
+                    prefixIcon: const Icon(Icons.email, color: Color(0xFFee7b64)),
                   ),
                   validator: (value) {
-                    return RegExp(
-                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value!)
-                        ? null
-                        : "Please enter a valid email";
+                    if (value == null || value.isEmpty) {
+                      return 'Email cannot be empty';
+                    } else if (!isEmail(value)) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
                   },
                 ),
-                SizedBox(
-                  height: 5.0,
-                ),
+                const SizedBox(height: 5.0),
                 TextFormField(
                   obscureText: true,
                   obscuringCharacter: '*',
-                  onChanged: (value) {
-                    setState(() {
-                      password = value;
-                    });
-
-                    //Do something with the user input.
-                  },
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w500),
+                  onChanged: (value) => setState(() => password = value),
+                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                   decoration: ktextInputDecoration.copyWith(
                     labelText: 'Password',
-                    prefixIcon: const Align(
-                      widthFactor: 1.0,
-                      heightFactor: 1.0,
-                      child: Icon(
-                        Icons.lock,
-                        color: Color(0xFFee7b64),
-                      ),
-                    ),
+                    prefixIcon: const Icon(Icons.lock, color: Color(0xFFee7b64)),
                   ),
                   validator: (value) {
-                    if (value!.length < 6) {
-                      return "Password must be atlease 6 characters in length";
+                    if (value == null || value.isEmpty) {
+                      return "Password cannot be empty";
+                    } else if (value.length < 6) {
+                      return "Password must be at least 6 characters long";
                     }
+                    return null;
                   },
                 ),
+                const SizedBox(height: 10),
                 RoundedButton(
-                    title: 'Register',
-                    colour: Color(0xFFee7b64),
-                    onPressed: () async {
-                      register();
-                    }),
-
-                const SizedBox(
-                  height: 10,
+                  title: 'Register',
+                  colour: const Color(0xFFee7b64),
+                  onPressed: () async => register(),
                 ),
+                const SizedBox(height: 10),
                 Center(
                   child: RichText(
                     text: TextSpan(
-                        text: "Already have an account? ",
-                        style: const TextStyle(color: Colors.black),
-                        children: [
-                          TextSpan(
-                              text: 'Login now',
-
-                              style: const TextStyle(
-                                color: Colors.black,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
-                                }),
-                        ]),
+                      text: "Already have an account? ",
+                      style: const TextStyle(color: Colors.black),
+                      children: [
+                        TextSpan(
+                          text: 'Login now',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginScreen()),
+                              );
+                            },
+                        ),
+                      ],
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -196,37 +159,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
-  register() async {
-    if(_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading=true;
 
-      });
-      await authService.registeruserwithemailandpassword(fullname, email, password).then((value)async {
-          if(value==true){
+  Future<void> register() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
 
-            await HelperFunctions.saveUserLoggedInStatus(true);
-            await HelperFunctions.saveUserEmail(email);
-            await HelperFunctions.saveUserName(fullname);
-            
-            // ignore: use_build_context_synchronously
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context)=> HomePage()),
-            );
+      final result = await authService.registeruserwithemailandpassword(fullname, email, password);
 
+      if (result == true) {
+        await HelperFunctions.saveUserLoggedInStatus(true);
+        await HelperFunctions.saveUserEmail(email);
+        await HelperFunctions.saveUserName(fullname);
 
-          }
-          else{
-            showSnackBar(context, Colors.red, value);
-            setState(() {
-              _isLoading=false;
-            });
-          }
-      });
-
-
+        // Navigate to HomePage
+        if (mounted) {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        }
+      } else {
+        if (mounted) {
+          showSnackBar(context, Colors.red, result);
+          setState(() => _isLoading = false);
+        }
+      }
     }
-
-
   }
 }

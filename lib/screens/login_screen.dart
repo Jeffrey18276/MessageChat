@@ -16,6 +16,7 @@ import 'home_page.dart';
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
+  static const String routeName = '/login';
 }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -27,143 +28,143 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   AuthService authService = AuthService();
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: _isLoading
           ? Center(
-              child: CircularProgressIndicator(color: const Color(0xFFee7b64)))
+          child: CircularProgressIndicator(color: const Color(0xFFee7b64)))
           : SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 80),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      const Text(
-                        "Login",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                      Hero(
-                        tag: 'log',
-                        child: Container(
-                          height: 300,
-                          child: Image.asset('images/login.png'),
-                        ),
-                      ),
-                      TextFormField(
-                        onChanged: (value) {
-                          setState(() {
-                            email = value;
-                          });
-
-                          //Do something with the user input.
-                        },
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                        decoration: ktextInputDecoration.copyWith(
-                          labelText: 'Email',
-                          prefixIcon: const Align(
-                            widthFactor: 1.0,
-                            heightFactor: 1.0,
-                            child: Icon(
-                              Icons.email,
-                              color: Color(0xFFee7b64),
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          return RegExp(
-                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                  .hasMatch(value!)
-                              ? null
-                              : "Please enter a valid email";
-                        },
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        obscuringCharacter: '*',
-                        onChanged: (value) {
-                          setState(() {
-                            password = value;
-                          });
-
-                          //Do something with the user input.
-                        },
-                        style: const TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                        decoration: ktextInputDecoration.copyWith(
-                          labelText: 'Password',
-                          prefixIcon: const Align(
-                            widthFactor: 1.0,
-                            heightFactor: 1.0,
-                            child: Icon(
-                              Icons.lock,
-                              color: Color(0xFFee7b64),
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value!.length < 6) {
-                            return "Password must be atlease 6 characters in length";
-                          }
-                        },
-                      ),
-                      RoundedButton(
-                          title: 'Log In',
-                          colour: const Color(0xFFee7b64),
-                          onPressed: () async {
-                            if (login()) {
-                              setState(() {
-                                showSpinner = true;
-                              });
-                            }
-                          }),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: RichText(
-                          text: TextSpan(
-                              text: "Don't have an account? ",
-                              style: const TextStyle(color: Colors.black),
-                              children: [
-                                TextSpan(
-                                    text: 'Register here',
-                                    style: const TextStyle(
-                                      color: Colors.blue,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    RegistrationScreen()));
-                                      }),
-                              ]),
-                        ),
-                      )
-                    ],
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 80),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                const Text(
+                  "Login",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+                Hero(
+                  tag: 'log',
+                  child: Container(
+                    height: 300,
+                    child: Image.asset('images/login.png'),
                   ),
                 ),
-              ),
+                TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      email = value;
+                    });
+                  },
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.w500),
+                  decoration: ktextInputDecoration.copyWith(
+                    labelText: 'Email',
+                    prefixIcon: const Align(
+                      widthFactor: 1.0,
+                      heightFactor: 1.0,
+                      child: Icon(
+                        Icons.email,
+                        color: Color(0xFFee7b64),
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    return RegExp(
+                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value!)
+                        ? null
+                        : "Please enter a valid email";
+                  },
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                TextFormField(
+                  obscureText: true,
+                  obscuringCharacter: '*',
+                  onChanged: (value) {
+                    setState(() {
+                      password = value;
+                    });
+                  },
+                  style: const TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.w500),
+                  decoration: ktextInputDecoration.copyWith(
+                    labelText: 'Password',
+                    prefixIcon: const Align(
+                      widthFactor: 1.0,
+                      heightFactor: 1.0,
+                      child: Icon(
+                        Icons.lock,
+                        color: Color(0xFFee7b64),
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.length < 6) {
+                      return "Password must be at least 6 characters in length";
+                    }
+                    return null;
+                  },
+                ),
+                RoundedButton(
+                    title: 'Log In',
+                    colour: const Color(0xFFee7b64),
+                    onPressed: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      await login();
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: const TextStyle(color: Colors.black),
+                        children: [
+                          TextSpan(
+                              text: 'Register here',
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RegistrationScreen()));
+                                }),
+                        ]),
+                  ),
+                )
+              ],
             ),
+          ),
+        ),
+      ),
     );
   }
 
-  login() async {
+  Future<bool> login() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -173,8 +174,8 @@ class _LoginScreenState extends State<LoginScreen> {
           .then((value) async {
         if (value == true) {
           QuerySnapshot snapshot =
-              await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
-                  .gettingUserData(email);
+          await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+              .gettingUserData(email);
 
           await HelperFunctions.saveUserLoggedInStatus(true);
           await HelperFunctions.saveUserEmail(email);
@@ -184,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
-            (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
           );
         } else {
           showSnackBar(context, Colors.red, value);
@@ -195,5 +196,15 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
     return false;
+  }
+
+  void showSnackBar(BuildContext context, Color color, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 }
